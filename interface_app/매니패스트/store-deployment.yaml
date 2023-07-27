@@ -20,3 +20,7 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 9003
+      volumes:
+        - name: persistent-storage
+          persistentVolumeClaim:
+            claimName: efs-claim
