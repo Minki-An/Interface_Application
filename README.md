@@ -4,7 +4,7 @@
 
 작동 순서 
 
-1. EKS 클러스터를 먼저 배포해주세요 (EKS cluster repo 를 참조해주세요)
+1. EKS 클러스터를 먼저 배포해주세요 (EKS cluster repo 를 참조해주세요) https://github.com/Minki-An/eks-cluster
 
 2. 로드밸런서 컨트롤러, 서비스 어카운트 , OIDC 연결 , iam policy 부착이 완료되어있어야 합니다.
 
