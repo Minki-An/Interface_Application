@@ -18,7 +18,7 @@
 
 7. frontend order user 세 어플리케이션을 빌드 후 ECR 로 push 해주세요
 
-8. 다시 매니패스트로 돌아가 frontend order user 의 service, deployment, ingress 를 모두 배포해주세요
+8. 다시 매니패스트로 돌아가 frontend order user 의 service, deployment, ingress 를 모두 배포해주세요 (이미지 태그 수정 해주세요)
 
 9. 그 상태로 로드밸런서 주소로 접속하면 데이터 정보를 가져오지 못 할 것입니다.
 
