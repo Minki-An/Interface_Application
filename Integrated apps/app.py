@@ -114,7 +114,7 @@ def order(oid):
                 sid = v["storeId"]
                 break
 
-        response = requests.get("/api/store/" + sid)
+        response = requests.get("http://localhost:9000/api/store/" + sid)
         store_status = response.json()
 
         return store_status
