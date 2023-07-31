@@ -14,13 +14,13 @@ db_config = [
         'host': '43.201.252.118',
         'user': 'gasida',
         'password': 'qwe123',
-        'db': 'userinfo',
+        'db': 'products',
     },
     {
         'host': '43.201.252.118',
         'user': 'gasida',
         'password': 'qwe123',
-        'db': 'products',
+        'db': 'userinfo',
     },
 ]
 
@@ -124,7 +124,7 @@ def order(oid):
 
 @app.route("/api/store/<id>", methods=["GET"])
 def store(id):
-    store_status={"100":0, "101":1, "102":1, "103":1}
+    store_status={"100":0, "101":1, "102":1, "103":1, "104":1, "105":1, "106":1, "107":1}
     if id in  store_status.keys():
         data={"status": store_status[id]}
         return jsonify(data) 
