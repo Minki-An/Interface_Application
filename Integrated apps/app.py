@@ -3,47 +3,36 @@
 from flask import Flask, render_template, jsonify, session, request, redirect
 import json
 import requests
+import pymysql
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 app.config['JSON_AS_ASCII'] = False
 
-order_list='''
-[
+db_config = [
     {
-        "id":"1",
-        "name":"맥도날드 햄버거",
-        "store":"한국 맥도날드",
-        "storeId": "100",
-        "price": 8700,
-        "img":"https://joinc-edu.s3.ap-northeast-2.amazonaws.com/docker-msa/ham-01.jpeg"
+        'host': '43.201.252.118',
+        'user': 'gasida',
+        'password': 'qwe123',
+        'db': 'userinfo',
     },
     {
-        "id":"2",
-        "name":"좋은날 떡복이",
-        "store":"좋은음식",
-        "storeId": "101",
-        "price": 5000,
-        "img":"https://joinc-edu.s3.ap-northeast-2.amazonaws.com/docker-msa/tteokbokki.jpeg"
+        'host': '43.201.252.118',
+        'user': 'gasida',
+        'password': 'qwe123',
+        'db': 'products',
     },
-    {
-        "id":"3",
-        "name":"우리 돈까스",
-        "store":"우리돈",
-        "storeId": "102",
-        "price": 11000,
-        "img":"https://joinc-edu.s3.ap-northeast-2.amazonaws.com/docker-msa/pork_cutlet.jpg"
-    },
-    {
-        "id":"4",
-        "name":"빅맥 세트",
-        "store":"롯데리아",
-        "storeId": "103",
-        "price": 15000,
-        "img":"https://joinc-edu.s3.ap-northeast-2.amazonaws.com/docker-msa/ham-02.jpeg"
-    }
 ]
-'''
+
+first_db_config = db_config[0]
+
+def get_db():
+    return pymysql.connect(**first_db_config)
+
+second_db_config = db_config[1]
+
+def get_userinfodb():
+    return pymysql.connect(**second_db_config)
 
 @app.route("/")
 def index():
@@ -68,20 +57,70 @@ def login():
     
 
 @app.route("/api/order", methods=["GET"])
-def products():
-    data = json.loads(order_list)
-    return jsonify(data)
+def get_orders():
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM products")
+        rows = cursor.fetchall()
+        cursor.close()
+        conn.close()
+
+        # 딕셔너리 형태로 변환하여 JSON으로 반환
+        orders = []
+        for row in rows:
+            order = {
+                'id': row[0],
+                'name': row[1],
+                'store': row[2],
+                'storeId': row[3],
+                'price': row[4],
+                'img': row[5]
+            }
+            orders.append(order)
+
+        return jsonify(orders), 200
+
+    except Exception as e:
+        return jsonify({'message': 'Error', 'error': str(e)}), 500
 
 @app.route("/api/order/<oid>", methods=["GET"])
 def order(oid):
-    sid="0"
-    data = json.loads(order_list)
-    for v in data: 
-        if v["id"]==oid:
-            sid=v["storeId"]
-    response = requests.get("/api/store/"+sid)
-    store_status = json.loads(response.content)
-    return store_status 
+    try:
+
+        conn = get_db()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM products")
+        rows = cursor.fetchall()
+        cursor.close()
+        conn.close()
+
+        orders = []
+        for row in rows:
+            order = {
+                'id': row[0],
+                'name': row[1],
+                'store': row[2],
+                'storeId': row[3],
+                'price': row[4],
+                'img': row[5]
+            }
+            orders.append(order)
+        orders_json = json.dumps(orders)
+        data = json.loads(orders_json)
+        sid = "0"
+        for v in data:
+            if v["id"] == oid:
+                sid = v["storeId"]
+                break
+
+        response = requests.get("/api/store/" + sid)
+        store_status = response.json()
+
+        return store_status
+
+    except Exception as e:
+        return jsonify({'message': 'Error', 'error': str(e)}), 500
 
 @app.route("/api/store/<id>", methods=["GET"])
 def store(id):
