@@ -1,4 +1,4 @@
-# My-app
+# Interface_Application
 
 팀 프로젝트에 사용한 모놀로식 어플리케이션과 MSA 리팩토링 된 어플리케이션 입니다. 
 
